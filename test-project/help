@@ -1,0 +1,19 @@
+"github.com/valyala/fastjson"
+
+email = fastjson.GetString(line, cEmail)
+
+
+Для хранения дампов используем LRU (вытесняющий КЭШ). Размер КЭШа будет динамический и зависеть от максимального параметра M в клиентских запросах.
+
+1. Middleware - logging and resize capacity - ok
+2. build tags (mingw) - !!!
+3. init config.go: dump fields, ip, port, capacity - ok
+4. linter - ok
+5. unit-tests - !!
+6. integrations-tests - !
+7. ssl
+
+
+
+
+
