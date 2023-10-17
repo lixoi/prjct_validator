@@ -389,13 +389,20 @@ func (d *Detector) DetectGit(source string, logOpts string, gitScanType GitScanT
 	for gitdiffFile := range gitdiffFiles {
 		gitdiffFile := gitdiffFile
 
-		if gitdiffFile.IsBinary || gitdiffFile.IsDelete {
-			finding := report.Finding{}
+		if gitdiffFile.IsBinary {
+			finding := report.Finding{
+				Match:   "file detected: binary format",
+				Message: "invalid format file",
+				File:    gitdiffFile.NewName,
+			}
 			if gitdiffFile.PatchHeader != nil {
 				finding.Commit = gitdiffFile.PatchHeader.SHA
 			}
-			finding.Commit = "find binary file"
 			d.addFinding(finding)
+			continue
+		}
+
+		if gitdiffFile.IsDelete {
 			continue
 		}
 
@@ -509,11 +516,11 @@ func (d *Detector) DetectFiles(source, formatOpts string) ([]report.Finding, err
 			}
 			//
 			if !fv.IsValidFormat(mimeType) {
-				finding := report.Finding{}
-				finding.File = p.Path
-				finding.Match = "file detected: true"
-				finding.Message = "invalid format file"
-				d.addFinding(finding)
+				d.addFinding(report.Finding{
+					Match:   "file detected: binary format",
+					Message: "invalid format file",
+					File:    p.Path,
+				})
 				return nil
 			}
 			//
